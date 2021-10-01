@@ -1,4 +1,24 @@
 @tailwind base;
 /* Write your global styles here, in PostCSS syntax */
 @tailwind components;
-@tailwind utilities
+@tailwind utilities;
+
+.font-ubuntu {
+  font-family: Ubuntu, sans-serif;
+}
+
+.button {
+  @apply px-4 py-2 rounded outline-none bg-primary-light border border-transparent text-white hover:brightness-110;
+  transition: all 500ms ease;
+}
+
+label,
+.label {
+  @apply font-bold block mb-1;
+}
+
+input,
+.input {
+  @apply outline-none rounded px-4 py-2 bg-white text-black w-full;
+  font-family: Ubuntu, sans-serif;
+}
