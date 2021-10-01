@@ -34,6 +34,7 @@ When making pull requests to the repository, make sure to follow these guideline
 This repository follows a similar commit message format to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 The basic structure is:
+
 ```
 <type>([scope]): <description>
 
@@ -41,7 +42,7 @@ The basic structure is:
 
 [footers]
 ```
+
 > Anything marked in `<>` is **required**, and anything marked in `[]` is **optional**.
 
 Examples:
-
