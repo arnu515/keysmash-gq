@@ -16,6 +16,7 @@
     "@fontsource/poppins": "^4.5.0",
     "@fontsource/ubuntu": "^4.5.0",
     "@sveltejs/kit": "next",
+    "@types/md5": "^2.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "autoprefixer": "^10.3.1",
@@ -46,6 +47,7 @@
     "@felte/validator-yup": "^0.2.8",
     "@supabase/supabase-js": "^1.24.0",
     "felte": "^0.8.3",
+    "md5": "^2.3.0",
     "yup": "^0.32.9"
   }
 }
