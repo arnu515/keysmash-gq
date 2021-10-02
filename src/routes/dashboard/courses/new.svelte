@@ -8,24 +8,10 @@ import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
-import profile, { getTeacher, Teacher } from "$lib/stores/profile";
+import { getTeacher, Teacher } from "$lib/stores/profile";
 
 let loading = true;
 let teacher: Teacher;
-
-onMount(async () => {
-  if (!$user) {
-    goto("/auth");
-  }
-
-  teacher = await getTeacher();
-  if (!teacher) {
-    goto("/dashboard");
-    return;
-  }
-
-  loading = false;
-});
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -35,12 +21,12 @@ const schema = yup.object({
 });
 
 const { form } = createForm({
-  onSubmit: auth,
+  onSubmit: createCourse,
   extend: [validator, svelteReporter],
   validateSchema: schema
 });
 
-async function auth(values: Record<string, unknown>) {
+async function createCourse(values: Record<string, unknown>) {
   if (!teacher) {
     goto("/dashboard");
     return;
@@ -60,6 +46,20 @@ async function auth(values: Record<string, unknown>) {
     goto("/courses/" + data[0].id);
   }
 }
+
+onMount(async () => {
+  if (!$user) {
+    goto("/auth");
+  }
+
+  teacher = await getTeacher();
+  if (!teacher) {
+    goto("/dashboard");
+    return;
+  }
+
+  loading = false;
+});
 </script>
 
 {#if !loading && teacher && $user}

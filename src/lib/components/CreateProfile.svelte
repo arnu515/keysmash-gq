@@ -21,14 +21,14 @@ const schema = yup.object({
 });
 
 const { form } = createForm({
-  onSubmit: auth,
+  onSubmit: createProfile,
   extend: [validator, svelteReporter],
   validateSchema: schema
 });
 
-async function auth({ username }: { username: string }) {
+async function createProfile({ username }: { username: string }) {
   if ($user && $profile) {
-    notifications.notify("Already logged in!");
+    notifications.notify("You already have a profile!");
     goto("/");
     return;
   }

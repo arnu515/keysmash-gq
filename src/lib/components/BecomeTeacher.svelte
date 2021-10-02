@@ -6,13 +6,11 @@ import * as yup from "yup";
 import supabase from "$lib/supabase";
 import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
-import { goto } from "$app/navigation";
-import { createEventDispatcher, onMount } from "svelte";
-import profile, { getTeacher } from "$lib/stores/profile";
+import { createEventDispatcher } from "svelte";
+import { getTeacher } from "$lib/stores/profile";
 import { fade, slide } from "svelte/transition";
 
 const d = createEventDispatcher();
-let md5: (x: string) => string;
 export let show = false;
 
 const schema = yup.object({
@@ -25,12 +23,12 @@ const schema = yup.object({
 });
 
 const { form } = createForm({
-  onSubmit: auth,
+  onSubmit: becomeTeacher,
   extend: [validator, svelteReporter],
   validateSchema: schema
 });
 
-async function auth(values: Record<string, string>) {
+async function becomeTeacher(values: Record<string, string>) {
   if (await getTeacher()) {
     notifications.notify("You're already a teacher!");
     d("done");
@@ -51,11 +49,6 @@ async function auth(values: Record<string, string>) {
     d("done", data[0]);
   }
 }
-
-onMount(async () => {
-  const { default: mdfive } = await import("md5");
-  md5 = mdfive;
-});
 </script>
 
 {#if show}
