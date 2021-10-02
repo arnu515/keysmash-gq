@@ -15,6 +15,7 @@
     "@fontsource/fira-code": "^4.5.1",
     "@fontsource/poppins": "^4.5.0",
     "@fontsource/ubuntu": "^4.5.0",
+    "@sveltejs/adapter-vercel": "^1.0.0-next.30",
     "@sveltejs/kit": "next",
     "@types/md5": "^2.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",

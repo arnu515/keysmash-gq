@@ -175,6 +175,13 @@
     "@supabase/realtime-js" "^1.1.3"
     "@supabase/storage-js" "^1.4.0"
 
+"@sveltejs/adapter-vercel@^1.0.0-next.30":
+  version "1.0.0-next.30"
+  resolved "https://registry.yarnpkg.com/@sveltejs/adapter-vercel/-/adapter-vercel-1.0.0-next.30.tgz#9a6443694b897390f7046d1f0ed24cf9d6358a78"
+  integrity sha512-6QEwOEPXX36AmsveQFNwo+omluptsdnmXrISXc1ZNiT+rPaVHRXqp5aNPn9uB9SNKXnc1eEmmor5sIJFUqR10g==
+  dependencies:
+    esbuild "^0.13.3"
+
 "@sveltejs/kit@next":
   version "1.0.0-next.178"
   resolved "https://registry.yarnpkg.com/@sveltejs/kit/-/kit-1.0.0-next.178.tgz#b0e511f88942ff04a4ddba7a215b6ab76f6d52f5"
@@ -998,7 +1005,7 @@ esbuild-windows-arm64@0.13.3:
   resolved "https://registry.yarnpkg.com/esbuild-windows-arm64/-/esbuild-windows-arm64-0.13.3.tgz#a236199a26b1205573dcb571f966189326a4c953"
   integrity sha512-nP7H0Y2a6OJd3Qi1Q8sehhyP4x4JoXK4S5y6FzH2vgaJgiyEurzFxjUufGdMaw+RxtxiwD/uRndUgwaZ2JD8lg==
 
-esbuild@^0.13.2:
+esbuild@^0.13.2, esbuild@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.13.3.tgz#cc9fc347fc81ff6440cdd1fdb9fe65c02eddcc97"
   integrity sha512-98xovMLKnyhv3gcReUuAEi5Ig1rK6SIgvsJuBIcfwzqGSEHsV8UJjMlmkhHoHMf9XZybMpE9Zax8AA8f7i2hlQ==
