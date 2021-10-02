@@ -11,6 +11,7 @@ import user from "$lib/stores/user";
 import Notifications from "$lib/components/Notifications.svelte";
 import profile from "$lib/stores/profile";
 import { goto } from "$app/navigation";
+import Navbar from "$lib/components/Navbar.svelte";
 
 let loading = true;
 
@@ -40,5 +41,6 @@ $: if (!loading && $user && !$profile && typeof window !== "undefined")
 
 {#if !loading}
   <Notifications />
+  <Navbar />
   <slot />
 {/if}
