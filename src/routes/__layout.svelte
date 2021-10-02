@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/700.css";
 import "@fontsource/ubuntu/400.css";
