@@ -14,6 +14,7 @@ import { goto } from "$app/navigation";
 import Navbar from "$lib/components/Navbar.svelte";
 
 let loading = true;
+let reg: ServiceWorkerRegistration;
 
 onMount(async () => {
   $session = supabase.auth.session();
@@ -29,6 +30,10 @@ onMount(async () => {
 
   if ($user) {
     $profile = await getProfile();
+  }
+
+  if ("serviceWorker" in navigator) {
+    reg = await navigator.serviceWorker.register("/service-worker.js");
   }
 
   loading = false;
