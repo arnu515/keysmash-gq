@@ -13,7 +13,7 @@ export interface Teacher {
   id: string;
   full_name: string;
   website?: string;
-  bio?: string;
+  about?: string;
   created_at: string;
 }
 
