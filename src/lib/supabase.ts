@@ -28,22 +28,18 @@ export interface Course {
   is_public: boolean;
 }
 
-export async function getProfile(): Promise<Profile | null> {
-  if (!supabase.auth.user()) return;
-  const { data = [] } = await supabase
-    .from("profiles")
-    .select()
-    .eq("id", supabase.auth.user().id);
+export async function getProfile(userId?: string): Promise<Profile | null> {
+  if (!userId && !supabase.auth.user()) return;
+  userId = userId || supabase.auth.user().id;
+  const { data = [] } = await supabase.from("profiles").select().eq("id", userId);
   const profile = data[0];
   return profile ?? null;
 }
 
-export async function getTeacher(): Promise<Teacher | null> {
-  if (!supabase.auth.user()) return;
-  const { data = [] } = await supabase
-    .from("teachers")
-    .select()
-    .eq("id", supabase.auth.user().id);
+export async function getTeacher(userId?: string): Promise<Teacher | null> {
+  if (!userId && !supabase.auth.user()) return;
+  userId = userId || supabase.auth.user().id;
+  const { data = [] } = await supabase.from("teachers").select().eq("id", userId);
   const teacher = data[0];
   return teacher ?? null;
 }
