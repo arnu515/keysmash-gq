@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { number } from "yup";
 
 export interface Profile {
   id: string;
@@ -14,6 +15,17 @@ export interface Teacher {
   website?: string;
   bio?: string;
   created_at: string;
+}
+
+export interface Course {
+  id: number;
+  name: string;
+  teacher_id: Teacher["id"];
+  cover_url?: string;
+  tags?: string;
+  description: string;
+  learning_goals: string;
+  is_public: boolean;
 }
 
 export async function getProfile(): Promise<Profile | null> {
@@ -34,6 +46,29 @@ export async function getTeacher(): Promise<Teacher | null> {
     .eq("id", supabase.auth.user().id);
   const teacher = data[0];
   return teacher ?? null;
+}
+
+export async function getCourses(opts: {
+  byUser?: boolean;
+  id?: string;
+}): Promise<Course[] | null> {
+  const { byUser = false, id } = opts;
+  if (byUser && !supabase.auth.user()) return null;
+  let courses: Course[];
+  if (byUser) {
+    const { data = [] } = await supabase
+      .from("courses")
+      .select()
+      .eq("teacher_id", supabase.auth.user().id);
+    courses = data;
+  } else if (id) {
+    const { data = [] } = await supabase.from("courses").select().eq("id", id);
+    courses = data;
+  } else {
+    const { data = [] } = await supabase.from("courses").select();
+    courses = data;
+  }
+  return courses;
 }
 
 const supabase = createClient(
