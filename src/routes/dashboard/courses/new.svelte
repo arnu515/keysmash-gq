@@ -8,7 +8,7 @@ import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
-import { getTeacher, Teacher } from "$lib/stores/profile";
+import { getTeacher, Teacher } from "$lib/supabase";
 
 let loading = true;
 let teacher: Teacher;

@@ -7,7 +7,7 @@ import supabase from "$lib/supabase";
 import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
 import { createEventDispatcher } from "svelte";
-import { getTeacher } from "$lib/stores/profile";
+import { getTeacher } from "$lib/supabase";
 import { fade, slide } from "svelte/transition";
 
 const d = createEventDispatcher();

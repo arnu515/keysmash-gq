@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { getTeacher, Teacher } from "$lib/stores/profile";
+import { getTeacher, Teacher } from "$lib/supabase";
 import BecomeTeacher from "$lib/components/BecomeTeacher.svelte";
 
 let teacher: Teacher;
