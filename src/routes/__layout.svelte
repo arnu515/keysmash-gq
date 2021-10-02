@@ -4,13 +4,14 @@ import "@fontsource/poppins/700.css";
 import "@fontsource/ubuntu/400.css";
 import "@fontsource/fira-code/400.css";
 import "../app.postcss";
-import supabase from "$lib/supabase";
+import supabase, { getProfile } from "$lib/supabase";
 import { onMount } from "svelte";
 import session from "$lib/stores/session";
 import user from "$lib/stores/user";
 import Notifications from "$lib/components/Notifications.svelte";
-import profile, { getProfile } from "$lib/stores/profile";
+import profile from "$lib/stores/profile";
 import { goto } from "$app/navigation";
+import Navbar from "$lib/components/Navbar.svelte";
 
 let loading = true;
 
@@ -40,5 +41,6 @@ $: if (!loading && $user && !$profile && typeof window !== "undefined")
 
 {#if !loading}
   <Notifications />
+  <Navbar />
   <slot />
 {/if}
