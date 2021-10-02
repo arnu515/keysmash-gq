@@ -9,6 +9,14 @@ export interface Profile {
   created_at: string;
 }
 
+export interface Teacher {
+  id: string;
+  full_name: string;
+  website?: string;
+  bio?: string;
+  created_at: string;
+}
+
 export async function getProfile(): Promise<Profile | null> {
   if (!supabase.auth.user()) return;
   const { data = [] } = await supabase
@@ -17,6 +25,16 @@ export async function getProfile(): Promise<Profile | null> {
     .eq("id", supabase.auth.user().id);
   const profile = data[0];
   return profile ?? null;
+}
+
+export async function getTeacher(): Promise<Teacher | null> {
+  if (!supabase.auth.user()) return;
+  const { data = [] } = await supabase
+    .from("teachers")
+    .select()
+    .eq("id", supabase.auth.user().id);
+  const teacher = data[0];
+  return teacher ?? null;
 }
 
 const profile = writable<Profile | null>(null);
