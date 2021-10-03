@@ -159,7 +159,8 @@ $: console.log({ course, teacher });
 </script>
 
 <h1 class="text-center text-4xl m-4 font-bold">Edit course</h1>
-<p class="m-4 text-center text-xl">
+<p class="m-4 text-center text-xl flex justify-center items-center gap-4">
+  <a href="/courses/{id}" class="button !bg-secondary">View course</a>
   <a href="/courses/{id}/editor" class="button">Edit sections and lectures</a>
 </p>
 {#if !loading && course && teacher && $user}
