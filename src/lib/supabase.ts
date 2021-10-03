@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { number } from "yup";
 
 export interface Profile {
   id: string;
@@ -27,12 +28,23 @@ export interface Course {
   is_public: boolean;
 }
 
-export interface Section {
+export interface CourseSection {
   id: number;
   created_at: string;
   name: string;
-  course_id: string;
+  course_id: number;
   description?: string;
+}
+
+export interface CourseLesson {
+  id: number;
+  created_at: string;
+  title: string;
+  description?: string;
+  course_id: number;
+  section_id: number;
+  type: "youtube" | "markdown" | "document";
+  item_link: string;
 }
 
 export async function getProfile(userId?: string): Promise<Profile | null> {
