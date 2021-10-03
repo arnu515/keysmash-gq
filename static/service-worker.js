@@ -1,3 +1,5 @@
+// TODO: Cache images
+
 const filesToCache = ["/offline.html"];
 const cacheName = "offline-cache";
 
