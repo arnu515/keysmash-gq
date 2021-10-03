@@ -62,11 +62,11 @@ export async function getTeacher(userId?: string): Promise<Teacher | null> {
   return teacher ?? null;
 }
 
-export async function getCourses(opts: {
+export async function getCourses(opts?: {
   byUser?: boolean;
   id?: string;
 }): Promise<Course[] | null> {
-  const { byUser = false, id } = opts;
+  const { byUser = false, id } = opts || {};
   if (byUser && !supabase.auth.user()) return null;
   let courses: Course[];
   if (byUser) {
