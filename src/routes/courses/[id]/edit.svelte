@@ -232,14 +232,27 @@ $: console.log({ course, teacher });
       <button class="button w-full !bg-secondary" type="submit">Save changes</button>
     </div>
     <div class="mt-6">
-      <h3 class="text-2xl m-4">Change cover image (click image to change):</h3>
-      <img
-        src={course.cover_url}
-        alt="Cover"
-        class="rounded-lg max-h-[360px] w-full cursor-pointer hover:brightness-50"
-        style="transition: filter 1s ease;"
-        on:click={changeCoverImg}
-      />
+      <h3 class="text-2xl m-4">
+        Change cover image{#if course.cover_url} (click image to change){/if}:
+      </h3>
+      {#if course.cover_url}
+        <img
+          src={course.cover_url}
+          alt="Cover"
+          class="rounded-lg max-h-[360px] w-full cursor-pointer hover:brightness-50"
+          style="transition: filter 1s ease;"
+          on:click={changeCoverImg}
+        />
+      {:else}
+        <p class="text-lg">
+          <button
+            type="button"
+            on:click={changeCoverImg}
+            class="text-secondary underline hover:text-secondary-hover cursor-pointer"
+            style="transition: 500ms ease color">Add a cover image</button
+          >
+        </p>
+      {/if}
     </div>
   </form>
 

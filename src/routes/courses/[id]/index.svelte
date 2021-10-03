@@ -72,12 +72,14 @@ $: console.log({ course, instructor });
   {:else}
     <main class="course-grid">
       <section id="course" class="card">
-        <img
-          on:click={() => (window.location.href = course.cover_url)}
-          src={course.cover_url}
-          alt="Course's cover"
-          class="cover"
-        />
+        {#if course.cover_url}
+          <img
+            on:click={() => (window.location.href = course.cover_url)}
+            src={course.cover_url}
+            alt="Course's cover"
+            class="cover"
+          />
+        {/if}
         {#if !course.is_public}
           <div class="private">
             This course is private!
