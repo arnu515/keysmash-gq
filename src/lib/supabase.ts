@@ -27,6 +27,14 @@ export interface Course {
   is_public: boolean;
 }
 
+export interface Section {
+  id: number;
+  created_at: string;
+  name: string;
+  course_id: string;
+  description?: string;
+}
+
 export async function getProfile(userId?: string): Promise<Profile | null> {
   if (!userId && !supabase.auth.user()) return;
   userId = userId || supabase.auth.user().id;
