@@ -17,21 +17,21 @@ export const post: RequestHandler = async ({ body, locals, headers, params }) =>
       jwt: headers["x-token"]
     })
     .select();
-  if (fError || !fData[0]) {
-    return { status: 401, body: { error: fError?.message || "Unauthorized" } };
+  if (fError || !fData) {
+    return { status: 401, body: { error: fError?.message || "Invalid token" } };
   }
-  const user = fData[0];
+  const user = fData as unknown as {id: string};
 
   const { error: cError, data: cData } = await supabase
     .from("courses")
     .select()
     .eq("id", params.id);
   if (cError || !cData[0]) {
-    return { status: 401, body: { error: cError?.message || "Unauthorized" } };
+    return { status: cError ? 400 : 404, body: { error: cError?.message || "Course not found" } };
   }
   const course = cData[0];
   if (course.teacher_id !== user.id) {
-    return { status: 401, body: { error: "Unauthorized" } };
+    return { status: 403, body: { error: "Forbidden" } };
   }
 
   const { error: sError } = await supabase.storage
