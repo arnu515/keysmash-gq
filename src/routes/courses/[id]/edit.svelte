@@ -105,17 +105,19 @@ async function changeCoverImg() {
       headers: {
         "x-token": $session.access_token
       }
-    }).then(r => r.json()).then((data) => {
-      if (data.error) {
-        notifications.notify(data.error);
-      }else {
-        notifications.notify({
-          message: "Cover changed",
-          type: "success"
-        });
-        course = data;
-      }
     })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) {
+          notifications.notify(data.error);
+        } else {
+          notifications.notify({
+            message: "Cover changed",
+            type: "success"
+          });
+          course = data;
+        }
+      });
   });
   input.click();
 }
