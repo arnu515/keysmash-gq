@@ -12,6 +12,8 @@ import Notifications from "$lib/components/Notifications.svelte";
 import profile from "$lib/stores/profile";
 import { goto } from "$app/navigation";
 import Navbar from "$lib/components/Navbar.svelte";
+import qs from "qs";
+import notifications from "$lib/stores/notifications";
 
 let loading = true;
 let reg: ServiceWorkerRegistration;
@@ -34,6 +36,17 @@ onMount(async () => {
 
   if ("serviceWorker" in navigator) {
     reg = await navigator.serviceWorker.register("/service-worker.js");
+  }
+
+  // Check for supabase errors
+  const hash = window.location.hash.substr(1);
+  if (hash) {
+    const { error_description } = qs.parse(hash);
+    if (typeof error_description === "string") {
+      // There is an error
+      notifications.notify(error_description);
+      window.location.hash = "";
+    }
   }
 
   loading = false;
