@@ -48,6 +48,7 @@
     "@felte/reporter-svelte": "^0.3.16",
     "@felte/validator-yup": "^0.2.8",
     "@supabase/supabase-js": "^1.24.0",
+    "dotenv": "^10.0.0",
     "felte": "^0.8.3",
     "md5": "^2.3.0",
     "qs": "^6.10.1",
