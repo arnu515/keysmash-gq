@@ -25,6 +25,7 @@ export interface Course {
   description: string;
   learning_goals: string;
   is_public: boolean;
+  created_at: string;
 }
 
 export interface CourseSection {
