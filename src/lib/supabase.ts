@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import type { number } from "yup";
 
 export interface Profile {
   id: string;
