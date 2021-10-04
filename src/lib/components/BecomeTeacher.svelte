@@ -120,7 +120,7 @@ async function becomeTeacher(values: Record<string, string>) {
             >Cancel</button
           >
           <button class="button w-full !bg-secondary" type="submit"
-            >Create my profile</button
+            >Become a teacher</button
           >
         </div>
       </form>

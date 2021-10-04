@@ -72,12 +72,14 @@ $: console.log({ course, instructor });
   {:else}
     <main class="course-grid">
       <section id="course" class="card">
-        <img
-          on:click={() => (window.location.href = course.cover_url)}
-          src={course.cover_url}
-          alt="Course's cover"
-          class="cover"
-        />
+        {#if course.cover_url}
+          <img
+            on:click={() => (window.location.href = course.cover_url)}
+            src={course.cover_url}
+            alt="Course's cover"
+            class="cover"
+          />
+        {/if}
         {#if !course.is_public}
           <div class="private">
             This course is private!
@@ -89,11 +91,11 @@ $: console.log({ course, instructor });
           <h1 class="title">
             {course.name}
             {#if $user?.id === instructor.teacher.id}
-              <button class="button !bg-secondary">Enroll now</button>
-            {:else}
               <a href="/courses/{course.id}/edit" class="button !bg-secondary"
                 >Edit course</a
               >
+            {:else}
+              <button class="button !bg-secondary">Enroll now</button>
             {/if}
           </h1>
           <p class="desc">{course.description}</p>
@@ -167,7 +169,7 @@ $: console.log({ course, instructor });
     @apply px-6 py-4;
     .title {
       @apply text-4xl font-bold m-4 flex items-center justify-between;
-      button {
+      .button {
         @apply text-base;
       }
     }

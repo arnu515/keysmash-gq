@@ -43,7 +43,7 @@ async function createCourse(values: Record<string, unknown>) {
       message: "Created a course",
       type: "success"
     });
-    goto("/courses/" + data[0].id);
+    goto("/courses/" + data[0].id + "/edit");
   }
 }
 

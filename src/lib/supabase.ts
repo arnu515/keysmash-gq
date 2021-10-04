@@ -25,6 +25,26 @@ export interface Course {
   description: string;
   learning_goals: string;
   is_public: boolean;
+  created_at: string;
+}
+
+export interface CourseSection {
+  id: number;
+  created_at: string;
+  name: string;
+  course_id: number;
+  description?: string;
+}
+
+export interface CourseLesson {
+  id: number;
+  created_at: string;
+  title: string;
+  description?: string;
+  course_id: number;
+  section_id: number;
+  type: "youtube" | "markdown" | "document";
+  item_link: string;
 }
 
 export async function getProfile(userId?: string): Promise<Profile | null> {
@@ -43,11 +63,11 @@ export async function getTeacher(userId?: string): Promise<Teacher | null> {
   return teacher ?? null;
 }
 
-export async function getCourses(opts: {
+export async function getCourses(opts?: {
   byUser?: boolean;
   id?: string;
 }): Promise<Course[] | null> {
-  const { byUser = false, id } = opts;
+  const { byUser = false, id } = opts || {};
   if (byUser && !supabase.auth.user()) return null;
   let courses: Course[];
   if (byUser) {

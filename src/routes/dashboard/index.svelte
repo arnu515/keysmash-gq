@@ -1,13 +1,19 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { getTeacher, Teacher } from "$lib/supabase";
+import { Course, getCourses, getTeacher, Teacher } from "$lib/supabase";
 import BecomeTeacher from "$lib/components/BecomeTeacher.svelte";
+import CourseCard from "$lib/components/CourseCard.svelte";
 
 let teacher: Teacher;
 let becomeTeacherModalVisible = false;
+let coursesByUser: Course[] = [];
 
 onMount(async () => {
   teacher = await getTeacher();
+
+  if (teacher) {
+    coursesByUser = await getCourses({ byUser: true });
+  }
 });
 </script>
 
@@ -40,6 +46,9 @@ onMount(async () => {
           Create new course
         </a>
       </p>
+      {#each coursesByUser as course}
+        <CourseCard {course} {teacher} showCover={false} />
+      {/each}
     {/if}
   </section>
 </main>

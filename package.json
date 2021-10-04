@@ -1,6 +1,6 @@
 {
   "name": "supabase-hackathon",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
@@ -48,6 +48,8 @@
     "@felte/reporter-svelte": "^0.3.16",
     "@felte/validator-yup": "^0.2.8",
     "@supabase/supabase-js": "^1.24.0",
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
     "felte": "^0.8.3",
     "md5": "^2.3.0",
     "qs": "^6.10.1",
