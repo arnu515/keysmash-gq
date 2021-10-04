@@ -59,4 +59,12 @@ async function auth({ email }: { email: string }) {
     >
     <button class="button w-full !bg-secondary" type="submit">✉ Send me a link!</button>
   </div>
+  <div class="mt-4 flex flex-col gap-4">
+    <button
+      class="button w-full"
+      on:click={() => {
+        if (!$user) supabase.auth.signIn({ provider: "github" });
+      }}>Login with Github</button
+    >
+  </div>
 </form>
