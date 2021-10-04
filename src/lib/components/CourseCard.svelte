@@ -4,11 +4,12 @@ import day from "dayjs";
 
 export let course: Course;
 export let teacher: Teacher;
+export let showCover = true;
 </script>
 
 <a href="/courses/{course.id}">
   <article class="bg-primary-light rounded-lg m-4">
-    {#if course.cover_url}
+    {#if course.cover_url && showCover}
       <img
         src={course.cover_url}
         alt="Cover of {course.name}"

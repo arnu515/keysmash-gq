@@ -47,7 +47,7 @@ onMount(async () => {
         </a>
       </p>
       {#each coursesByUser as course}
-        <CourseCard {course} {teacher} />
+        <CourseCard {course} {teacher} showCover={false} />
       {/each}
     {/if}
   </section>
