@@ -24,6 +24,7 @@ import supabase, {
 import { onMount } from "svelte";
 import notifications from "$lib/stores/notifications";
 import EditOrCreateSectionModal from "$lib/components/EditOrCreateSectionModal.svelte";
+import * as yup from "yup";
 
 export let id: string;
 let course: Course;
@@ -34,6 +35,8 @@ let sections: Section[] = [];
 
 let editSection = false;
 let selectedSection: Section | {} = null;
+
+let selectedLesson: Partial<CourseLesson>;
 
 interface Section extends CourseSection {
   lessons: CourseLesson[];
@@ -99,6 +102,7 @@ async function createOrEditSection(
 }
 
 async function deleteSection(sectionId: number) {
+  if (!window.confirm("Are you sure")) return;
   notifications.notify({ message: "Deleting section", type: "success" });
   const { error } = await supabase.from("course_sections").delete().eq("id", sectionId);
   if (error) {
@@ -107,6 +111,45 @@ async function deleteSection(sectionId: number) {
     sections = sections.filter(i => i.id !== sectionId);
   }
   notifications.notify({ message: "Deleted section", type: "success" });
+}
+
+async function changeLessonMeta(lesson: typeof selectedLesson) {
+  const schema = yup.object({
+    title: yup.string().required(),
+    description: yup.string().required(),
+    type: yup.string().required().oneOf(["youtube", "markdown", "document"])
+  });
+  if (!(await schema.isValid(lesson))) return;
+  const created = !lesson.id;
+  const { error, data } = await supabase
+    .from("course_lessons")
+    .upsert({ ...lesson }, { returning: "representation" });
+  if (error) {
+    notifications.notify(error.message);
+  } else {
+    let ins = data[0];
+    let section = sections.find(i => i.id === ins.section_id);
+    if (created) section.lessons = [...section.lessons, ins];
+    else section.lessons = section.lessons.map(i => (i.id === ins.id ? ins : i));
+    sections = sections.map(i => (i.id === section.id ? section : i));
+    selectedLesson = null;
+  }
+}
+
+async function deleteLesson() {
+  if (!selectedLesson) return;
+  let lesson = selectedLesson;
+  if (!window.confirm("Are you sure")) return;
+  notifications.notify({ message: "Deleting lesson", type: "success" });
+  const { error } = await supabase.from("course_lessons").delete().eq("id", lesson.id);
+  if (error) {
+    notifications.notify(error.message);
+  } else {
+    let section = sections.find(i => i.id === lesson.section_id);
+    section.lessons = section.lessons.filter(i => i.id !== lesson.id);
+    sections = sections.map(i => (i.id === section.id ? section : i));
+    selectedLesson = null;
+  }
 }
 
 onMount(async () => {
@@ -170,11 +213,29 @@ onMount(async () => {
             >
               {section.name}
             </div>
-            <ul class="lessons">
+            <ol class="lessons">
               {#each section.lessons as lesson}
-                <li class="lesson">{lesson.title}</li>
+                <li
+                  class="lesson"
+                  on:click={() => {
+                    selectedLesson = lesson;
+                  }}
+                >
+                  {lesson.title}
+                </li>
               {/each}
-              <li class="sidebar-button">
+              <li
+                class="sidebar-button"
+                on:click={() => {
+                  selectedLesson = {
+                    course_id: course.id,
+                    description: "",
+                    title: "",
+                    section_id: section.id,
+                    type: "youtube"
+                  };
+                }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -191,7 +252,7 @@ onMount(async () => {
                 </svg>
                 Add lesson
               </li>
-            </ul>
+            </ol>
           </div>
         {/each}
         <div class="sidebar-button" on:click={() => (selectedSection = {})}>
@@ -213,12 +274,53 @@ onMount(async () => {
         </div>
       </aside>
     {/if}
-    <main class="lecture-area">
+    <main class="lesson-area">
       {#if !sidebarOpen}
         <small
           class="m-4 text-gray-200 font-mono hover:underline cursor-pointer"
           on:click={() => (sidebarOpen = true)}>&raquo; Open sidebar</small
         >
+      {/if}
+      {#if selectedLesson}
+        <form
+          on:submit|preventDefault={() => changeLessonMeta(selectedLesson)}
+          class="lesson-meta"
+        >
+          <h3 class="text-2xl m-4">Lesson Metadata (click to edit)</h3>
+          <input
+            type="text"
+            class="title-input"
+            aria-label="Title"
+            placeholder="Title"
+            bind:value={selectedLesson.title}
+          />
+          <textarea
+            rows={1}
+            class="description-input"
+            aria-label="Description"
+            placeholder="Description"
+            bind:value={selectedLesson.description}
+          />
+          <select
+            class="type-input"
+            aria-label="Type of content"
+            bind:value={selectedLesson.type}
+          >
+            <option value="youtube">Type: Youtube Video</option>
+            <option value="markdown">Type: Markdown</option>
+            <option value="document">Type: Document</option>
+          </select>
+          <div class="flex gap-4 items-center m-2">
+            <button
+              class="button !bg-red-500 w-full"
+              type="button"
+              on:click={deleteLesson}>Delete</button
+            >
+            <button class="button !bg-secondary w-full" type="submit">Save</button>
+          </div>
+        </form>
+      {:else}
+        <h2 class="text-3xl m-4">Select a lesson to edit it</h2>
       {/if}
     </main>
   </section>
@@ -277,10 +379,24 @@ onMount(async () => {
         @apply bg-primary-dark px-4 py-2;
       }
       .lessons {
-        @apply m-0 p-0 ml-2 list-none flex flex-col gap-2 justify-center;
+        @apply m-0 p-0 ml-2 list-decimal flex flex-col gap-2 justify-center;
         .lesson {
           @apply py-1 px-2;
         }
+      }
+    }
+  }
+  .lesson-area {
+    .lesson-meta {
+      @apply border-b border-black px-4 py-2;
+      .title-input {
+        @apply text-white bg-transparent border border-transparent text-3xl font-bold font-sans my-2;
+      }
+      .description-input {
+        @apply text-white bg-transparent border border-transparent text-xl my-2;
+      }
+      .type-input {
+        @apply px-4 py-2 w-full bg-transparent text-white border border-black my-2;
       }
     }
   }
