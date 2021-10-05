@@ -12,8 +12,10 @@ export const load: Load = ({
 
 <script lang="ts">
 import { onMount } from "svelte";
-import {
+import supabase, {
   Course,
+  CourseLesson,
+  CourseSection,
   getCourses,
   getProfile,
   getTeacher,
@@ -26,7 +28,37 @@ import user from "$lib/stores/user";
 export let id: string;
 let loading = true;
 let course: Course;
+let sections: Section[];
 let instructor: { teacher: Teacher; profile: Profile };
+
+interface Section extends CourseSection {
+  lessons: CourseLesson[];
+}
+
+async function getSections() {
+  // Get all sections of a course with lessons
+  const { error, data } = await supabase
+    .from("course_sections")
+    .select(
+      `
+    id,
+    created_at,
+    name,
+    course_id,
+    description,
+    lessons:course_lessons(
+      *
+    )
+  `
+    )
+    .eq("course_id", course.id);
+  if (error) {
+    notifications.notify(error.message);
+    return [];
+  } else {
+    return data;
+  }
+}
 
 onMount(async () => {
   const courses = await getCourses({ id });
@@ -49,6 +81,8 @@ onMount(async () => {
     return;
   }
   instructor = { teacher, profile: teacherProfile };
+
+  sections = await getSections();
 
   loading = false;
 });
@@ -99,6 +133,22 @@ $: console.log({ course, instructor });
             {/if}
           </h1>
           <p class="desc">{course.description}</p>
+
+          <div class="course-content">
+            <h2 class="title">Course content</h2>
+            {#if sections}
+              <div class="content">
+                {#each sections as section, sectionIndex}
+                  <div class="section">
+                    {sectionIndex + 1}. {section.name}
+                  </div>
+                  {#each section.lessons as lesson, lessonIndex}
+                    <div class="lesson">{lessonIndex + 1}. {lesson.title}</div>
+                  {/each}
+                {/each}
+              </div>
+            {/if}
+          </div>
         </div>
       </section>
       <aside>
@@ -176,6 +226,21 @@ $: console.log({ course, instructor });
     .desc {
       @apply text-2xl m-4;
       font-family: Ubuntu, sans-serif;
+    }
+  }
+}
+
+.course-content {
+  .title {
+    @apply text-3xl font-bold m-4;
+  }
+  .content {
+    @apply mt-4;
+    .section {
+      @apply bg-primary-dark px-4 py-2 text-2xl font-bold;
+    }
+    .lesson {
+      @apply bg-primary-light pl-6 border-b border-primary text-xl py-2;
     }
   }
 }
