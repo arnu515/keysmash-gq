@@ -342,7 +342,7 @@ onMount(async () => {
             <option value="markdown">Type: Markdown</option>
             <option value="document">Type: Document</option>
           </select>
-          <div class="flex gap-4 items-center m-2">
+          <div class="flex gap-4 items-center my-2">
             <button
               class="button !bg-red-500 w-full"
               type="button"
@@ -454,13 +454,13 @@ onMount(async () => {
     .lesson-meta {
       @apply border-b border-black px-4 py-2;
       .title-input {
-        @apply text-white bg-transparent border border-transparent text-3xl font-bold font-sans my-2;
+        @apply border border-black text-3xl font-bold font-sans my-2;
       }
       .description-input {
-        @apply text-white bg-transparent border border-transparent text-xl my-2;
+        @apply border border-black text-xl my-2;
       }
       .type-input {
-        @apply px-4 py-2 w-full bg-transparent text-white border border-black my-2;
+        @apply px-4 py-2 w-full bg-white text-black my-2;
       }
     }
   }
