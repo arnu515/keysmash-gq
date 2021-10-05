@@ -38,6 +38,8 @@ let selectedSection: Section | {} = null;
 
 let selectedLesson: Partial<CourseLesson>;
 
+let ytLink: string;
+
 interface Section extends CourseSection {
   lessons: CourseLesson[];
 }
@@ -149,6 +151,33 @@ async function deleteLesson() {
     section.lessons = section.lessons.filter(i => i.id !== lesson.id);
     sections = sections.map(i => (i.id === section.id ? section : i));
     selectedLesson = null;
+  }
+}
+
+async function addYt() {
+  if (!selectedLesson) return;
+  if (selectedLesson.type !== "youtube") return;
+  const url = new URL(ytLink);
+  if (!url.hostname.endsWith("youtube.com"))
+    return notifications.notify("Invalid Youtube URL");
+  const v = url.searchParams.get("v");
+  if (!v) return notifications.notify("Invalid Youtube URL");
+  const ytUrl = `https://youtube.com/embed/${v}`;
+  selectedLesson.item_link = ytUrl;
+  const { data, error } = await supabase
+    .from("course_lessons")
+    .update({
+      item_link: ytUrl,
+      type: "youtube"
+    })
+    .eq("id", selectedLesson.id);
+  if (error) notifications.notify(error.message);
+  else {
+    selectedLesson = data[0];
+    notifications.notify({
+      type: "success",
+      message: "Updated URL"
+    });
   }
 }
 
@@ -322,6 +351,38 @@ onMount(async () => {
             <button class="button !bg-secondary w-full" type="submit">Save</button>
           </div>
         </form>
+        <hr class="my-4 border-t border-white" />
+        <div class="m-4">
+          <h3 class="text-2xl m-4">Edit lesson content</h3>
+          {#if !selectedLesson.item_link}
+            <p class="text-xl font-bold text-center text-red-500">
+              This lesson has no content, and will, therefore, not be available to
+              students.
+            </p>
+          {/if}
+          {#if selectedLesson.type === "youtube"}
+            <form on:submit|preventDefault={addYt}>
+              <label for="yt-url">Enter Youtube Video URL</label>
+              <input
+                bind:value={ytLink}
+                type="url"
+                id="yt-url"
+                placeholder="https://youtube.com/watch?v=XXXXXXXX"
+              />
+              <button class="button my-2 !bg-secondary w-full" type="submit"
+                >Save</button
+              >
+            </form>
+            <iframe
+              title="Video"
+              allowFullScreen={true}
+              src={selectedLesson.item_link}
+              frameborder="0"
+              width={1280}
+              height={720}
+            />
+          {/if}
+        </div>
       {:else}
         <h2 class="text-3xl m-4">Select a lesson to edit it</h2>
       {/if}
