@@ -272,6 +272,9 @@ onMount(async () => {
           </svg>
           Create new section
         </div>
+        <div class="sidebar-button" on:click={() => goto(`/courses/${id}`)}>
+          Go to course
+        </div>
       </aside>
     {/if}
     <main class="lesson-area">
