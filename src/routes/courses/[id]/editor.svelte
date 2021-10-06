@@ -121,7 +121,7 @@ async function changeLessonMeta(lesson: typeof selectedLesson) {
   const schema = yup.object({
     title: yup.string().required(),
     description: yup.string().required(),
-    type: yup.string().required().oneOf(["youtube", "markdown", "document"])
+    type: yup.string().required().oneOf(["youtube", "markdown"])
   });
   if (!(await schema.isValid(lesson))) return;
   const created = !lesson.id;
@@ -394,7 +394,6 @@ onMount(async () => {
           >
             <option value="youtube">Type: Youtube Video</option>
             <option value="markdown">Type: Markdown</option>
-            <option value="document">Type: Document</option>
           </select>
           <div class="flex gap-4 items-center my-2">
             <button
