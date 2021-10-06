@@ -43,7 +43,7 @@ export interface CourseLesson {
   description?: string;
   course_id: number;
   section_id: number;
-  type: "youtube" | "markdown" | "document";
+  type: "youtube" | "markdown";
   item_link: string;
 }
 

@@ -122,6 +122,20 @@ async function changeCoverImg() {
   input.click();
 }
 
+async function deleteCourse() {
+  if (!window.confirm("Are you sure?")) return;
+
+  notifications.notify("Deleting course...");
+
+  const { error } = await supabase.from("courses").delete().eq("id", course.id);
+  if (error) {
+    notifications.notify(error.message);
+  } else {
+    goto("/dashboard");
+    notifications.notify({ type: "success", message: "Course deleted" });
+  }
+}
+
 onMount(async () => {
   if (!$user) {
     goto("/auth");
@@ -283,4 +297,20 @@ $: console.log({ course, teacher });
       class="button text-lg">Make {course.is_public ? "private" : "public"}</button
     >
   </div>
+
+  <div
+    class="mx-auto mt-4 w-[50%] max-w-[1100px] min-w-[300px] px-6 py-4 bg-red-500 rounded-lg flex items-center justify-between"
+  >
+    <div class="flex flex-col justify-center">
+      <h2 class="text-2xl">Delete Course</h2>
+      <p class="text-xl mt-2 font-ubuntu">
+        This action is IRREVERSIBLE. All student data will be LOST.
+      </p>
+    </div>
+    <button on:click={deleteCourse} class="button text-lg !bg-red-700"
+      >DELETE course</button
+    >
+  </div>
+
+  <br /><br />
 {/if}
