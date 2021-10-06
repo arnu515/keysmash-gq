@@ -25,6 +25,7 @@ import { onMount } from "svelte";
 import notifications from "$lib/stores/notifications";
 import EditOrCreateSectionModal from "$lib/components/EditOrCreateSectionModal.svelte";
 import * as yup from "yup";
+import session from "$lib/stores/session";
 
 export let id: string;
 let course: Course;
@@ -39,6 +40,7 @@ let selectedSection: Section | {} = null;
 let selectedLesson: Partial<CourseLesson>;
 
 let ytLink: string;
+let mdContent: string;
 
 interface Section extends CourseSection {
   lessons: CourseLesson[];
@@ -180,6 +182,54 @@ async function addYt() {
     });
   }
 }
+
+async function getMd() {
+  if (!selectedLesson) return;
+  if (selectedLesson.type !== "markdown") return;
+  if (!selectedLesson.item_link) return;
+  mdContent = "";
+  try {
+    const res = await fetch(selectedLesson.item_link, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + $session.access_token
+      }
+    });
+    const data = await res.text();
+    mdContent = data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function addMd() {
+  if (selectedLesson?.type !== "markdown") return;
+  if (!mdContent.trim()) return;
+  try {
+    const res = await fetch(`/courses/${id}/content?lesson=${selectedLesson.id}&md=1`, {
+      method: "POST",
+      headers: {
+        "x-token": $session.access_token,
+        "Content-Type": "text/plain"
+      },
+      body: mdContent.trim()
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      notifications.notify(data.error);
+    } else {
+      selectedLesson = data[0];
+      notifications.notify({
+        type: "success",
+        message: "Saved"
+      });
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+$: if (selectedLesson?.type === "markdown") getMd();
 
 onMount(async () => {
   if (!$user) {
@@ -354,33 +404,54 @@ onMount(async () => {
         <hr class="my-4 border-t border-white" />
         <div class="m-4">
           <h3 class="text-2xl m-4">Edit lesson content</h3>
-          {#if !selectedLesson.item_link}
-            <p class="text-xl font-bold text-center text-red-500">
-              This lesson has no content, and will, therefore, not be available to
-              students.
-            </p>
-          {/if}
-          {#if selectedLesson.type === "youtube"}
-            <form on:submit|preventDefault={addYt}>
-              <label for="yt-url">Enter Youtube Video URL</label>
-              <input
-                bind:value={ytLink}
-                type="url"
-                id="yt-url"
-                placeholder="https://youtube.com/watch?v=XXXXXXXX"
+          {#if selectedLesson.id}
+            {#if !selectedLesson.item_link}
+              <p class="text-xl font-bold text-center text-red-500">
+                This lesson has no content, and will, therefore, not be available to
+                students.
+              </p>
+            {/if}
+            {#if selectedLesson.type === "youtube"}
+              <form on:submit|preventDefault={addYt}>
+                <label for="yt-url">Enter Youtube Video URL</label>
+                <input
+                  bind:value={ytLink}
+                  type="url"
+                  id="yt-url"
+                  placeholder="https://youtube.com/watch?v=XXXXXXXX"
+                />
+                <button class="button my-2 !bg-secondary w-full" type="submit"
+                  >Save</button
+                >
+              </form>
+              <iframe
+                title="Video"
+                allowFullScreen={true}
+                src={selectedLesson.item_link}
+                frameborder="0"
+                width={1280}
+                height={720}
               />
-              <button class="button my-2 !bg-secondary w-full" type="submit"
-                >Save</button
-              >
-            </form>
-            <iframe
-              title="Video"
-              allowFullScreen={true}
-              src={selectedLesson.item_link}
-              frameborder="0"
-              width={1280}
-              height={720}
-            />
+            {:else if selectedLesson.type === "markdown"}
+              <form on:submit|preventDefault={addMd}>
+                <label for="content">Enter content</label>
+                <textarea
+                  placeholder="Write some markdown here"
+                  rows={15}
+                  bind:value={mdContent}
+                  id="content"
+                />
+                <small class="text-sm"
+                  ><a href="/" class="link !text-secondary">How to style content</a
+                  ></small
+                >
+                <button class="button my-2 !bg-secondary w-full" type="submit"
+                  >Save</button
+                >
+              </form>
+            {/if}
+          {:else}
+            <p class="text-center text-xl">Save your lesson to add content</p>
           {/if}
         </div>
       {:else}
