@@ -25,6 +25,7 @@ import supabase, {
 import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
 import { goto } from "$app/navigation";
+import AuthModal from "$lib/components/AuthModal.svelte";
 
 export let id: string;
 let loading = true;
@@ -32,6 +33,7 @@ let course: Course;
 let sections: Section[];
 let instructor: { teacher: Teacher; profile: Profile };
 let isUserEnrolled = false;
+let showAuthModal = false;
 
 interface Section extends CourseSection {
   lessons: CourseLesson[];
@@ -76,7 +78,7 @@ async function getUserEnrolled() {
 
 async function enrollInCourse() {
   if (!$user) {
-    // TODO: Show auth modal
+    showAuthModal = true;
     return;
   }
   if (!window.confirm("Are you sure?")) return;
@@ -229,6 +231,8 @@ $: console.log({ course, instructor });
     </main>
   {/if}
 {/if}
+
+<AuthModal show={showAuthModal} on:close={() => (showAuthModal = false)} />
 
 <style lang="postcss">
 .course-grid {
