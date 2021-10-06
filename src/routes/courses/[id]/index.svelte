@@ -24,12 +24,16 @@ import supabase, {
 } from "$lib/supabase";
 import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
+import { goto } from "$app/navigation";
+import AuthModal from "$lib/components/AuthModal.svelte";
 
 export let id: string;
 let loading = true;
 let course: Course;
 let sections: Section[];
 let instructor: { teacher: Teacher; profile: Profile };
+let isUserEnrolled = false;
+let showAuthModal = false;
 
 interface Section extends CourseSection {
   lessons: CourseLesson[];
@@ -60,6 +64,34 @@ async function getSections() {
   }
 }
 
+async function getUserEnrolled() {
+  if ($user) {
+    const { data } = await supabase
+      .from("user_enrolled_courses")
+      .select()
+      .eq("user_id", $user.id)
+      .eq("course_id", id);
+    return !!data?.[0];
+  }
+  return false;
+}
+
+async function enrollInCourse() {
+  if (!$user) {
+    showAuthModal = true;
+    return;
+  }
+  if (!window.confirm("Are you sure?")) return;
+  if (isUserEnrolled) return goto(`/dashboard/courses/${id}`);
+  const { error } = await supabase.from("user_enrolled_courses").insert({
+    user_id: $user.id,
+    course_id: course.id
+  });
+  if (error) {
+    notifications.notify(error.message);
+  } else goto(`/dashboard/courses/${id}`);
+}
+
 onMount(async () => {
   const courses = await getCourses({ id });
   if (Array.isArray(courses) && courses.length > 0) course = courses[0];
@@ -83,6 +115,8 @@ onMount(async () => {
   instructor = { teacher, profile: teacherProfile };
 
   sections = await getSections();
+
+  isUserEnrolled = await getUserEnrolled();
 
   loading = false;
 });
@@ -124,13 +158,20 @@ $: console.log({ course, instructor });
         <div class="content">
           <h1 class="title">
             {course.name}
-            {#if $user?.id === instructor.teacher.id}
-              <a href="/courses/{course.id}/edit" class="button !bg-secondary"
-                >Edit course</a
-              >
-            {:else}
-              <button class="button !bg-secondary">Enroll now</button>
-            {/if}
+            <div class="flex gap-4 mr-4 items-center">
+              {#if $user?.id === instructor.teacher.id}
+                <a href="/courses/{course.id}/edit" class="button">Edit course</a>
+              {/if}
+              {#if isUserEnrolled}
+                <a href="/dashboard/courses/{course.id}" class="button !bg-secondary"
+                  >View Course</a
+                >
+              {:else}
+                <button on:click={enrollInCourse} class="button font-bold !bg-secondary"
+                  >Enroll</button
+                >
+              {/if}
+            </div>
           </h1>
           <p class="desc">{course.description}</p>
 
@@ -190,6 +231,8 @@ $: console.log({ course, instructor });
     </main>
   {/if}
 {/if}
+
+<AuthModal show={showAuthModal} on:close={() => (showAuthModal = false)} />
 
 <style lang="postcss">
 .course-grid {
