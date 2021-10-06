@@ -205,6 +205,10 @@ async function getMd() {
 async function addMd() {
   if (selectedLesson?.type !== "markdown") return;
   if (!mdContent.trim()) return;
+  notifications.notify({
+    type: "success",
+    message: "Saving"
+  });
   try {
     const res = await fetch(`/courses/${id}/content?lesson=${selectedLesson.id}&md=1`, {
       method: "POST",
