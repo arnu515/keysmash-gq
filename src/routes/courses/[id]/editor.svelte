@@ -191,6 +191,7 @@ async function getMd() {
   try {
     const res = await fetch(selectedLesson.item_link, {
       method: "GET",
+      cache: "no-cache",
       headers: {
         Authorization: "Bearer " + $session.access_token
       }
