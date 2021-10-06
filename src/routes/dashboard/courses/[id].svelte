@@ -22,6 +22,8 @@ import supabase, {
 import { onMount } from "svelte";
 import notifications from "$lib/stores/notifications";
 import { session } from "$app/stores";
+import type MarkdownIt from "markdown-it";
+import "$lib/md.postcss";
 
 export let id: string;
 let course: Course;
@@ -29,6 +31,8 @@ let loading = true;
 let sidebarOpen = true;
 let sections: Section[] = [];
 let selectedLesson: Partial<CourseLesson>;
+
+let mdit: MarkdownIt;
 let mdContent = "Loading...";
 
 interface Section extends CourseSection {
@@ -80,12 +84,13 @@ async function getMd() {
   try {
     const res = await fetch(selectedLesson.item_link, {
       method: "GET",
+      cache: "no-cache",
       headers: {
         Authorization: "Bearer " + $session.access_token
       }
     });
     const data = await res.text();
-    mdContent = data;
+    mdContent = mdit.render(data);
   } catch (e) {
     console.error(e);
   }
@@ -105,6 +110,28 @@ onMount(async () => {
     goto(`/courses/${id}`);
   }
 
+  const { default: MarkdownIt } = await import("markdown-it");
+  const { default: hljs } = await import("highlight.js");
+  mdit = new MarkdownIt({
+    highlight: (str, lang) => {
+      console.log(str, lang);
+      try {
+        return (
+          '<pre class="hljs lang-' +
+          lang +
+          "><code>" +
+          hljs.highlightAuto(str).value +
+          "</code></pre>"
+        );
+      } catch (e) {
+        console.error(e);
+      }
+      return '<pre class="hljs"><code>' + mdit.utils.escapeHtml(str) + "</code></pre>";
+    },
+    html: true,
+    linkify: true
+  });
+
   const courses = await getCourses({ id });
   if (Array.isArray(courses) && courses.length > 0) course = courses[0];
   if (!course) {
@@ -118,6 +145,17 @@ onMount(async () => {
   loading = false;
 });
 </script>
+
+<svelte:head>
+  <!-- TODO: Add title, desc, meta tags for all web pages -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github-dark.min.css"
+    integrity="sha512-rO+olRTkcf304DQBxSWxln8JXCzTHlKnIdnMUwYvQa9/Jd4cQaNkItIUj6Z4nvW1dqK0SKXLbn9h4KwZTNtAyw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</svelte:head>
 
 {#if !loading && course && $user}
   <header class="bg-primary border-b border-primary-dark py-6">
@@ -185,7 +223,7 @@ onMount(async () => {
             height={720}
           />
         {:else}
-          <div class="m-4">
+          <div class="md-content">
             {@html mdContent}
           </div>
         {/if}
