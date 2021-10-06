@@ -156,19 +156,20 @@ $: console.log({ course, instructor });
         <div class="content">
           <h1 class="title">
             {course.name}
-            {#if $user?.id === instructor.teacher.id}
-              <a href="/courses/{course.id}/edit" class="button !bg-secondary"
-                >Edit course</a
-              >
-            {:else if isUserEnrolled}
-              <a href="/dashboard/courses/{course.id}" class="button !bg-secondary"
-                >View Course</a
-              >
-            {:else}
-              <button on:click={enrollInCourse} class="button !bg-secondary"
-                >Enroll</button
-              >
-            {/if}
+            <div class="flex gap-4 mr-4 items-center">
+              {#if $user?.id === instructor.teacher.id}
+                <a href="/courses/{course.id}/edit" class="button">Edit course</a>
+              {/if}
+              {#if isUserEnrolled}
+                <a href="/dashboard/courses/{course.id}" class="button !bg-secondary"
+                  >View Course</a
+                >
+              {:else}
+                <button on:click={enrollInCourse} class="button font-bold !bg-secondary"
+                  >Enroll</button
+                >
+              {/if}
+            </div>
           </h1>
           <p class="desc">{course.description}</p>
 
