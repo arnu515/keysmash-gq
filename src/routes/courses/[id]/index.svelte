@@ -24,12 +24,14 @@ import supabase, {
 } from "$lib/supabase";
 import notifications from "$lib/stores/notifications";
 import user from "$lib/stores/user";
+import { goto } from "$app/navigation";
 
 export let id: string;
 let loading = true;
 let course: Course;
 let sections: Section[];
 let instructor: { teacher: Teacher; profile: Profile };
+let isUserEnrolled = false;
 
 interface Section extends CourseSection {
   lessons: CourseLesson[];
@@ -60,6 +62,34 @@ async function getSections() {
   }
 }
 
+async function getUserEnrolled() {
+  if ($user) {
+    const { data } = await supabase
+      .from("user_enrolled_courses")
+      .select()
+      .eq("user_id", $user.id)
+      .eq("course_id", id);
+    return !!data?.[0];
+  }
+  return false;
+}
+
+async function enrollInCourse() {
+  if (!$user) {
+    // TODO: Show auth modal
+    return;
+  }
+  if (!window.confirm("Are you sure?")) return;
+  if (isUserEnrolled) return goto(`/dashboard/courses/${id}`);
+  const { error } = await supabase.from("user_enrolled_courses").insert({
+    user_id: $user.id,
+    course_id: course.id
+  });
+  if (error) {
+    notifications.notify(error.message);
+  } else goto(`/dashboard/courses/${id}`);
+}
+
 onMount(async () => {
   const courses = await getCourses({ id });
   if (Array.isArray(courses) && courses.length > 0) course = courses[0];
@@ -83,6 +113,8 @@ onMount(async () => {
   instructor = { teacher, profile: teacherProfile };
 
   sections = await getSections();
+
+  isUserEnrolled = await getUserEnrolled();
 
   loading = false;
 });
@@ -128,8 +160,14 @@ $: console.log({ course, instructor });
               <a href="/courses/{course.id}/edit" class="button !bg-secondary"
                 >Edit course</a
               >
+            {:else if isUserEnrolled}
+              <a href="/dashboard/courses/{course.id}" class="button !bg-secondary"
+                >View Course</a
+              >
             {:else}
-              <button class="button !bg-secondary">Enroll now</button>
+              <button on:click={enrollInCourse} class="button !bg-secondary"
+                >Enroll</button
+              >
             {/if}
           </h1>
           <p class="desc">{course.description}</p>
