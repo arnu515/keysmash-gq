@@ -5,6 +5,14 @@ import profile from "$lib/stores/profile";
 import user from "$lib/stores/user";
 </script>
 
+<svelte:head>
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
+</svelte:head>
+
 <main class="grid place-items-center fixed top-0 left-0 w-full h-full">
   {#if !$user}
     <Auth />

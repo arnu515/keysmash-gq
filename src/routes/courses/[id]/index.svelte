@@ -124,6 +124,15 @@ onMount(async () => {
 $: console.log({ course, instructor });
 </script>
 
+<svelte:head>
+  <title>{course?.name || "Loading..."}</title>
+  <meta
+    name="description"
+    content={course?.description || "Free courses for everyone"}
+  />
+  <meta name="keywords" content={course.tags.split("\n").join(",")} />
+</svelte:head>
+
 {#if !loading}
   {#if !course}
     <div

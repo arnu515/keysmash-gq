@@ -272,6 +272,15 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+  <title>{course?.name || "Loading..."}</title>
+  <meta
+    name="description"
+    content={course?.description || "Free courses for everyone"}
+  />
+  <meta name="keywords" content={course.tags.split("\n").join(",")} />
+</svelte:head>
+
 {#if !loading && course && teacher && $user}
   <header class="bg-primary border-b border-primary-dark py-6">
     <h1 class="text-center text-4xl font-bold m-4">{course.name}</h1>

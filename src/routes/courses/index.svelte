@@ -29,6 +29,14 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
+</svelte:head>
+
 <h1 class="text-5xl text-center m-4">Courses on KeySmash</h1>
 <div
   class="m-4 mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"

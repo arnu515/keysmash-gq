@@ -62,6 +62,14 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
+</svelte:head>
+
 {#if !loading && teacher && $user}
   <form
     use:form

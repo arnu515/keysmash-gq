@@ -156,6 +156,11 @@ onMount(async () => {
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
 </svelte:head>
 
 {#if !loading && course && $user}

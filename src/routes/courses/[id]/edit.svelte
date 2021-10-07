@@ -172,6 +172,15 @@ onMount(async () => {
 $: console.log({ course, teacher });
 </script>
 
+<svelte:head>
+  <title>{course?.name || "Loading..."}</title>
+  <meta
+    name="description"
+    content={course?.description || "Free courses for everyone"}
+  />
+  <meta name="keywords" content={course.tags.split("\n").join(",")} />
+</svelte:head>
+
 <h1 class="text-center text-4xl m-4 font-bold">Edit course</h1>
 <p class="m-4 text-center text-xl flex justify-center items-center gap-4">
   <a href="/courses/{id}" class="button !bg-secondary">View course</a>

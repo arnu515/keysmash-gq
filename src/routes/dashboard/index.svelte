@@ -58,6 +58,14 @@ onMount(async () => {
 $: console.log(enrolledCourses);
 </script>
 
+<svelte:head>
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
+</svelte:head>
+
 {#if $user}
   <h1 class="text-center text-5xl m-7 font-bold">Dashboard</h1>
 

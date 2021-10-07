@@ -5,6 +5,14 @@ import user from "$lib/stores/user";
 let showAuthModal = false;
 </script>
 
+<svelte:head>
+  <title>Keysmash - Free courses for everyone</title>
+  <meta
+    name="description"
+    content="Keysmash provides free developer courses for everyone"
+  />
+</svelte:head>
+
 <header class="mx-12 my-8 px-8 py-6">
   <h1 class="text-6xl text-center m-4 font-bold">
     Keymash <small class="text-gray-500 text-2xl font-normal">.gq</small>
