@@ -129,7 +129,8 @@ onMount(async () => {
       return '<pre class="hljs"><code>' + mdit.utils.escapeHtml(str) + "</code></pre>";
     },
     html: true,
-    linkify: true
+    linkify: true,
+    breaks: true
   });
 
   const courses = await getCourses({ id });
