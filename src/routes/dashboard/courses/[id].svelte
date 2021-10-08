@@ -148,7 +148,6 @@ onMount(async () => {
 </script>
 
 <svelte:head>
-  <!-- TODO: Add title, desc, meta tags for all web pages -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github-dark.min.css"
