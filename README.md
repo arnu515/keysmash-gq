@@ -1,6 +1,8 @@
+![KeySmash](https://user-images.githubusercontent.com/52203828/136652829-bedd2f58-483a-4335-9ceb-1e2d370d835c.png)
+
 # KeySmash - Free courses for everyone
 
-[KeySmash](https://keysmash.gq] is a website which provies free courses contributed by generous people to the world wide web. KeySmash was coded in [Svelte Kit](https://kit.svelte.dev) and uses [Supabase](https://supabase.io) for the backend
+[KeySmash](https://keysmash.gq) is a website which provies free courses contributed by generous people to the world wide web. KeySmash was coded in [Svelte Kit](https://kit.svelte.dev) and uses [Supabase](https://supabase.io) for the backend
 
 KeySmash is live at <https://keysmash.gq> and is hosted with [Vercel](https://vercel.com)!
 
