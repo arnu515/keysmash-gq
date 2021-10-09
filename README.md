@@ -1,4 +1,4 @@
-![KeySmash](https://user-images.githubusercontent.com/52203828/136652829-bedd2f58-483a-4335-9ceb-1e2d370d835c.png)
+![keysmash.gq screenshot](https://user-images.githubusercontent.com/52203828/136652971-8045e682-c3b0-4235-8839-6449f65201b3.png)
 
 # KeySmash - Free courses for everyone
 
