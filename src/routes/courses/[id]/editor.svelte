@@ -455,7 +455,7 @@ onMount(async () => {
                   id="content"
                 />
                 <small class="text-sm"
-                  ><a href="/" class="link !text-secondary">How to style content</a
+                  ><a href="https://www.markdowntutorial.com/" class="link !text-secondary">How to style content</a
                   ></small
                 >
                 <button class="button my-2 !bg-secondary w-full" type="submit"
